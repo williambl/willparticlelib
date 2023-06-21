@@ -13,9 +13,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.williambl.willparticlelib.api.WillParticleLib.id;
 
@@ -37,9 +39,7 @@ public final class CustomRenderTypes extends RenderType {
             .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
             .createCompositeState(false));
 
-
     public static class CustomRenderTarget {
-        private final ShaderStateShard shader;
         private final ResourceLocation name;
         private final ManagedFramebuffer framebuffer;
         private final OutputStateShard target;
@@ -47,21 +47,14 @@ public final class CustomRenderTypes extends RenderType {
         private final RenderType defaultType;
         private boolean hasBeenUsed;
 
-        public CustomRenderTarget(ResourceLocation shaderName, ResourceLocation bufferName, ManagedShaderEffect postShader, RenderType defaultType) {
-            this(new RenderStateShard.ShaderStateShard(ShaderEffectManager.getInstance().manageCoreShader(shaderName)::getProgram), bufferName, postShader, defaultType);
-        }
-
-        public CustomRenderTarget(ShaderStateShard shader, ResourceLocation bufferName, ManagedShaderEffect postShader, RenderType defaultType) {
-            this.shader = shader;
+        public CustomRenderTarget(ResourceLocation bufferName, ManagedShaderEffect postShader, RenderType defaultType) {
             this.name = bufferName;
             this.framebuffer = postShader.getTarget(bufferName.toString());
             this.target = new OutputStateShard(bufferName +"_target", this::begin, this::end);
             this.defaultType = this.getRenderType(defaultType);
             this.layerFunction = Util.memoize(id ->
                     RenderLayerHelper.copy(defaultType, this.name.toString(), builder ->
-                            builder.setOutputState(this.target)
-                                    .setShaderState(this.shader)
-                                    .setTextureState(new TextureStateShard(id, false, false))));
+                            builder.setOutputState(this.target).setTextureState(new TextureStateShard(id, false, false))));
         }
 
         public void clear() {
@@ -84,7 +77,7 @@ public final class CustomRenderTypes extends RenderType {
         }
 
         public RenderType getRenderType(RenderType base) {
-            return RenderLayerHelper.copy(base, this.name+" * "+ base, builder -> builder.setOutputState(this.target).setShaderState(this.shader));
+            return RenderLayerHelper.copy(base, this.name+" * "+ base, builder -> builder.setOutputState(this.target));
         }
 
         public RenderType getRenderType(ResourceLocation texture) {

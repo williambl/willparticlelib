@@ -12,6 +12,9 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.Map;
 
 import static com.williambl.willparticlelib.api.WillParticleLib.id;
 
@@ -21,7 +24,10 @@ public class WillParticleLibFabric implements ModInitializer {
     public void onInitialize() {
         var particleRenderType = WillParticleLib.registerRenderType(id("test"), Services.RENDERING.createParticleRenderType(
                 id("test"),
-                id("test_albedo"),
+                Map.of(
+                        id("albedo"), CustomRenderTypes.PARTICLE,
+                        id("position"), CustomRenderTypes.POSITION
+                ),
                 id("shaders/post/test_post.json")
         ));
         var particleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("test_particle"), new SimpleParticleType(true) {});

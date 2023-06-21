@@ -7,6 +7,8 @@ import ladysnake.satin.api.managed.ManagedFramebuffer;
 import ladysnake.satin.api.managed.ManagedShaderEffect;
 import ladysnake.satin.api.managed.ShaderEffectManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -14,23 +16,30 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.williambl.willparticlelib.api.WillParticleLib.id;
 
+// note:
+// render type = vanilla RenderType
+// particle render type = vanilla PArticleRenderType
+// w-particle render type = WParticleRenderType
+// render target = CustomRenderTypes.CustomRenderTarget
 public class FabricWParticleRenderType implements WParticleRenderType {
     private final ResourceLocation name;
     private final ManagedShaderEffect postShader;
     private final ManagedFramebuffer finalBuffer;
     private final Map<ResourceLocation, CustomRenderTypes.CustomRenderTarget> renderTargets;
 
-    public FabricWParticleRenderType(ResourceLocation name, ResourceLocation albedoShader, ResourceLocation postShader) {
+    public FabricWParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader) {
         this.name = name;
         this.postShader = ShaderEffectManager.getInstance().manage(postShader);
         this.finalBuffer = this.postShader.getTarget(id("final").toString());
-        var albedoRenderType = new CustomRenderTypes.CustomRenderTarget(albedoShader, id("albedo"), this.postShader, CustomRenderTypes.PARTICLE); //todo customise
-        this.renderTargets = new LinkedHashMap<>();
-        this.renderTargets.put(id("albedo"), albedoRenderType);
-        this.renderTargets.put(id("position"), new CustomRenderTypes.CustomRenderTarget(CustomRenderTypes.W_PARTICLE_POSITION_SHADER, id("position"), this.postShader, CustomRenderTypes.POSITION));
+        this.renderTargets = new LinkedHashMap<>(renderTargets.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> new CustomRenderTypes.CustomRenderTarget(e.getKey(), this.postShader, e.getValue())
+        )));
     }
 
     @Override
@@ -49,11 +58,12 @@ public class FabricWParticleRenderType implements WParticleRenderType {
 
     @Override
     public void renderPost(float tickDelta, long nanoTime) {
-        this.postShader.getTarget(id("albedo").toString()).draw(500, 500, false);
+        //RenderSystem.enableBlend();
+        //this.postShader.getTarget(id("albedo").toString()).draw(500, 500, false);
         this.postShader.render(tickDelta);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE); //todo customise
         this.finalBuffer.draw(Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight(), false);
         RenderSystem.disableBlend();
 
