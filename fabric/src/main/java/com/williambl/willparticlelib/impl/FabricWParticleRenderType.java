@@ -1,7 +1,9 @@
 package com.williambl.willparticlelib.impl;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.shaders.BlendMode;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.williambl.willparticlelib.api.Blending;
 import com.williambl.willparticlelib.api.WParticleRenderType;
 import ladysnake.satin.api.managed.ManagedFramebuffer;
 import ladysnake.satin.api.managed.ManagedShaderEffect;
@@ -12,6 +14,9 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,12 +34,14 @@ import static com.williambl.willparticlelib.api.WillParticleLib.id;
 public class FabricWParticleRenderType implements WParticleRenderType {
     private final ResourceLocation name;
     private final ManagedShaderEffect postShader;
+    private final Blending blending;
     private final ManagedFramebuffer finalBuffer;
     private final Map<ResourceLocation, CustomRenderTypes.CustomRenderTarget> renderTargets;
 
-    public FabricWParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader) {
+    public FabricWParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader, Blending blending) {
         this.name = name;
         this.postShader = ShaderEffectManager.getInstance().manage(postShader);
+        this.blending = blending;
         this.finalBuffer = this.postShader.getTarget(id("final").toString());
         this.renderTargets = new LinkedHashMap<>(renderTargets.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
@@ -58,14 +65,15 @@ public class FabricWParticleRenderType implements WParticleRenderType {
 
     @Override
     public void renderPost(float tickDelta, long nanoTime) {
-        //RenderSystem.enableBlend();
-        //this.postShader.getTarget(id("albedo").toString()).draw(500, 500, false);
         this.postShader.render(tickDelta);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE); //todo customise
-        this.finalBuffer.draw(Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight(), false);
+        RenderSystem.blendFuncSeparate(this.blending.srcRGB(), this.blending.destRGB(), this.blending.srcA(), this.blending.destA());
+        this.finalBuffer.draw(Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight(),false);
+        this.finalBuffer.clear();
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
         RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
 
         for (var target : this.renderTargets.values()) {
             target.clear();

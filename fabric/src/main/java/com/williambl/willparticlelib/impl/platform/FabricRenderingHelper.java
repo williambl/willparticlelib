@@ -1,5 +1,6 @@
 package com.williambl.willparticlelib.impl.platform;
 
+import com.williambl.willparticlelib.api.Blending;
 import com.williambl.willparticlelib.api.WParticleRenderType;
 import com.williambl.willparticlelib.impl.FabricWParticleRenderType;
 import com.williambl.willparticlelib.impl.PostLevelRenderCallback;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class FabricRenderingHelper implements IRenderingHelper {
     @Override
     public WParticleRenderType createParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader) {
-        return new FabricWParticleRenderType(name, renderTargets, postShader);
+        return new FabricWParticleRenderType(name, renderTargets, postShader, Blending.ADDITIVE);
     }
 
     @Override

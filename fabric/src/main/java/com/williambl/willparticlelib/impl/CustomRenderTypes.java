@@ -23,7 +23,7 @@ import static com.williambl.willparticlelib.api.WillParticleLib.id;
 
 // have to extend RenderType to access a few of these things
 public final class CustomRenderTypes extends RenderType {
-    public static final ResourceLocation WHITE = new ResourceLocation("misc/white.png");
+    public static final ResourceLocation WHITE = new ResourceLocation("textures/misc/white.png");
     public static final RenderStateShard.ShaderStateShard W_PARTICLE_POSITION_SHADER = new RenderStateShard.ShaderStateShard(ShaderEffectManager.getInstance().manageCoreShader(id("position"))::getProgram);
     //todo pass the correct matrices into this so it can actually work out the worldspace position
     public static final RenderType POSITION = create(id("position").toString(), DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()

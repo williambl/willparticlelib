@@ -4,17 +4,16 @@ uniform sampler2D DiffuseSampler;
 uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D MainDepthSampler;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+uniform vec4 ColorModulate;
 
-uniform vec2 InSize;
+in vec2 texCoord;
 
 out vec4 fragColor;
 
-void main() {
+void main(){
     vec4 CurrTexel = texture(DiffuseSampler, texCoord);
     float CurrDepth = texture(DiffuseDepthSampler, texCoord).r;
     float BgDepth = texture(MainDepthSampler, texCoord).r;
 
-    fragColor = CurrDepth < BgDepth ? CurrTexel : vec4(0.0);
+    fragColor = CurrDepth < BgDepth ? CurrTexel * ColorModulate : vec4(0.0);
 }
