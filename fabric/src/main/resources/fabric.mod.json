@@ -1,9 +1,9 @@
 {
     "schemaVersion": 1,
-    "id": "mod_id",
+    "id": "willparticlelib",
     "version": "${version}",
     "name": "${mod_name}",
-    "description": "This is an example description! Tell everyone what your mod is about!",
+    "description": "Particles !!!",
     "authors": [
         "${mod_author}"
     ],
@@ -16,12 +16,15 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "com.williambl.willparticlelib.ExampleMod"
+            "com.williambl.willparticlelib.impl.WillParticleLibFabric"
+        ],
+        "preLaunch": [
+            "com.williambl.willparticlelib.impl.WillParticleLibFabricPrelaunch"
         ]
     },
     "mixins": [
-        "examplemod.mixins.json",
-        "examplemod.fabric.mixins.json"
+        "willparticlelib.mixins.json",
+        "willparticlelib.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",

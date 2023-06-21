@@ -26,11 +26,13 @@ public class ParticleEngineMixin {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
     private void wpl$renderCustomParticles(PoseStack poseStack, MultiBufferSource.BufferSource buffers, LightTexture light, Camera camera, float tickDelta, CallbackInfo ci) {
         var particles = this.particles.get(ParticleRenderType.NO_RENDER);
-        for (var particle : particles) {
-            if (particle instanceof WParticle wParticle) {
-                poseStack.pushPose();
-                wParticle.render(poseStack, buffers, light, camera, tickDelta);
-                poseStack.popPose();
+        if (particles != null) {
+            for (var particle : particles) {
+                if (particle instanceof WParticle wParticle) {
+                    poseStack.pushPose();
+                    wParticle.render(poseStack, buffers, light, camera, tickDelta);
+                    poseStack.popPose();
+                }
             }
         }
     }

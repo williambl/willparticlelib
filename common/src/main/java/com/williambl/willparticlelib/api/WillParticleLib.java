@@ -18,10 +18,11 @@ public class WillParticleLib {
 		return new ResourceLocation(MOD_ID, path);
 	}
 
-	public static void registerRenderType(ResourceLocation name, WParticleRenderType wParticleRenderType) {
+	public static WParticleRenderType registerRenderType(ResourceLocation name, WParticleRenderType wParticleRenderType) {
 		W_PARTICLE_RENDER_TYPES.put(name, wParticleRenderType);
 		Services.RENDERING.registerPostLevelRenderCallback((poseStack, camera, tickDelta, nanoTime) -> {
 			wParticleRenderType.renderPost(tickDelta, nanoTime);
 		});
+		return wParticleRenderType;
 	}
 }

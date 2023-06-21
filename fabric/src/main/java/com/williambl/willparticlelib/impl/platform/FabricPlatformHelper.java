@@ -1,4 +1,4 @@
-package com.williambl.willparticlelib.platform;
+package com.williambl.willparticlelib.impl.platform;
 
 import com.williambl.willparticlelib.impl.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;

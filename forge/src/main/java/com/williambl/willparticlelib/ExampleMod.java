@@ -14,7 +14,5 @@ public class ExampleMod {
     
         // Use Forge to bootstrap the Common mod.
         WillParticleLib.LOGGER.info("Hello Forge world!");
-        CommonClass.init();
-        
     }
 }
