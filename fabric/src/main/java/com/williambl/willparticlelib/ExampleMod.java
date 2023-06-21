@@ -1,5 +1,6 @@
-package com.example.examplemod;
+package com.williambl.willparticlelib;
 
+import com.williambl.willparticlelib.api.WillParticleLib;
 import net.fabricmc.api.ModInitializer;
 
 public class ExampleMod implements ModInitializer {
@@ -12,7 +13,7 @@ public class ExampleMod implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        Constants.LOG.info("Hello Fabric world!");
+        WillParticleLib.LOGGER.info("Hello Fabric world!");
         CommonClass.init();
     }
 }

@@ -1,8 +1,9 @@
-package com.example.examplemod;
+package com.williambl.willparticlelib;
 
+import com.williambl.willparticlelib.api.WillParticleLib;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod(Constants.MOD_ID)
+@Mod(WillParticleLib.MOD_ID)
 public class ExampleMod {
     
     public ExampleMod() {
@@ -12,7 +13,7 @@ public class ExampleMod {
         // project.
     
         // Use Forge to bootstrap the Common mod.
-        Constants.LOG.info("Hello Forge world!");
+        WillParticleLib.LOGGER.info("Hello Forge world!");
         CommonClass.init();
         
     }

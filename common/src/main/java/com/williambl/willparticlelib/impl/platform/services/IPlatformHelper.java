@@ -1,4 +1,4 @@
-package com.example.examplemod.platform.services;
+package com.williambl.willparticlelib.impl.platform.services;
 
 public interface IPlatformHelper {
 
