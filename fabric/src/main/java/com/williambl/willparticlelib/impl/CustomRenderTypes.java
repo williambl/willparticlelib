@@ -24,7 +24,7 @@ import static com.williambl.willparticlelib.api.WillParticleLib.id;
 // have to extend RenderType to access a few of these things
 public final class CustomRenderTypes extends RenderType {
     public static final ResourceLocation WHITE = new ResourceLocation("textures/misc/white.png");
-    public static final ResourceLocation FLASH = new ResourceLocation("textures/block/red_stained_glass.png");
+    public static final ResourceLocation FLASH = new ResourceLocation("textures/particle/flash.png");
     public static final RenderStateShard.ShaderStateShard W_PARTICLE_POSITION_SHADER = new RenderStateShard.ShaderStateShard(ShaderEffectManager.getInstance().manageCoreShader(id("position"))::getProgram);
     //todo pass the correct matrices into this so it can actually work out the worldspace position
     public static final RenderType POSITION = create(id("position").toString(), DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
@@ -46,6 +46,14 @@ public final class CustomRenderTypes extends RenderType {
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
             .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+            .createCompositeState(false));
+
+    public static final RenderType TRANSLUCENT_PARTICLE_DEPTH_TESTED = create(id("translucent_particle").toString(), DefaultVertexFormat.PARTICLE, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new ShaderStateShard(GameRenderer::getParticleShader))
+            .setTextureState(new TextureStateShard(FLASH, false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
             .createCompositeState(false));
 
     public static class CustomRenderTarget {

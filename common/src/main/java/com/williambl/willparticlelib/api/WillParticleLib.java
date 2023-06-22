@@ -21,7 +21,7 @@ public class WillParticleLib {
 	public static WParticleRenderType registerRenderType(ResourceLocation name, WParticleRenderType wParticleRenderType) {
 		W_PARTICLE_RENDER_TYPES.put(name, wParticleRenderType);
 		Services.RENDERING.registerPostLevelRenderCallback((poseStack, camera, tickDelta, nanoTime) -> {
-			wParticleRenderType.renderPost(tickDelta, nanoTime);
+			wParticleRenderType.renderPost(camera, tickDelta, nanoTime);
 		});
 		return wParticleRenderType;
 	}

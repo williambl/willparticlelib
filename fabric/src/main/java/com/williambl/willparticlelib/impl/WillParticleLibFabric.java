@@ -30,16 +30,20 @@ public class WillParticleLibFabric implements ModInitializer {
                         id("albedo"), CustomRenderTypes.PARTICLE
                 ),
                 id("shaders/post/test_post.json"),
-                Blending.ADDITIVE
+                Blending.ADDITIVE,
+                ((FabricWParticleSetupFunction) (shader, cam, tickDelta, time) -> {})
         ));
 
         var translucentParticleRenderType = WillParticleLib.registerRenderType(id("translucent"), Services.RENDERING.createParticleRenderType(
                 id("translucent"),
                 Map.of(
-                        id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE
+                        id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED
                 ),
-                id("shaders/post/test_post.json"),
-                Blending.DEFAULT
+                id("shaders/post/soft_particle.json"),
+                Blending.DEFAULT,
+                ((FabricWParticleSetupFunction) (shader, cam, tickDelta, time) -> {
+                    shader.setUniformValue("NearPlane", (float) cam.getNearPlane().getPointOnPlane(0, 0).length());
+                })
         ));
 
         var additiveParticleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("additive_particle"), new SimpleParticleType(true) {});

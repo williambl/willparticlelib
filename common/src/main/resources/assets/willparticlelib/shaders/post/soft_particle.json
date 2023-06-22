@@ -1,0 +1,42 @@
+{
+  "targets": [
+    "willparticlelib:position",
+    "willparticlelib:albedo",
+    "swap",
+    "swap2",
+    "minecraft:main",
+    "willparticlelib:final"
+  ],
+  "passes": [
+    {
+      "name": "willparticlelib:cull_depth",
+      "intarget": "willparticlelib:albedo",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "MainDepthSampler",
+          "id": "minecraft:main:depth"
+        },
+        {
+          "name": "DiffuseDepthSampler",
+          "id": "willparticlelib:albedo:depth"
+        }
+      ]
+    },
+    {
+      "name": "willparticlelib:soft",
+      "intarget": "swap",
+      "outtarget": "willparticlelib:final",
+      "auxtargets": [
+        {
+          "name": "MainDepthSampler",
+          "id": "minecraft:main:depth"
+        },
+        {
+          "name": "DiffuseDepthSampler",
+          "id": "willparticlelib:albedo:depth"
+        }
+      ]
+    }
+  ]
+}

@@ -37,6 +37,7 @@ public class TestWParticle extends WParticle {
 
     public TestWParticle(ClientLevel $$0, double $$1, double $$2, double $$3, double $$4, double $$5, double $$6, WParticleRenderType wRenderType) {
         super($$0, $$1, $$2, $$3, $$4, $$5, $$6, wRenderType);
+        this.lifetime = 120;
     }
 
     @Override

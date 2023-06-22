@@ -9,11 +9,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Map;
 
 public interface IRenderingHelper {
+    //TODO replace with builder
     WParticleRenderType createParticleRenderType(
             ResourceLocation name,
             Map<ResourceLocation, RenderType> renderTargets,
             ResourceLocation postShader,
-            Blending blending
+            Blending blending,
+            Object setupFunction
     );
 
     void registerPostLevelRenderCallback(PostLevelRenderCallback callback);
