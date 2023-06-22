@@ -58,14 +58,16 @@ public final class CustomRenderTypes extends RenderType {
 
     public static class CustomRenderTarget {
         private final ResourceLocation name;
+        private final boolean copyDepth;
         private final ManagedFramebuffer framebuffer;
         private final OutputStateShard target;
         private final Function<ResourceLocation, RenderType> layerFunction;
         private final RenderType defaultType;
         private boolean hasBeenUsed;
 
-        public CustomRenderTarget(ResourceLocation bufferName, ManagedShaderEffect postShader, RenderType defaultType) {
+        public CustomRenderTarget(ResourceLocation bufferName, ManagedShaderEffect postShader, RenderType defaultType, boolean copyDepth) {
             this.name = bufferName;
+            this.copyDepth = copyDepth;
             this.framebuffer = postShader.getTarget(bufferName.toString());
             this.target = new OutputStateShard(bufferName +"_target", this::begin, this::end);
             this.defaultType = this.getRenderType(defaultType);
@@ -74,9 +76,8 @@ public final class CustomRenderTypes extends RenderType {
                             builder.setOutputState(this.target).setTextureState(new TextureStateShard(id, false, false))));
         }
 
-        public void clear() {
+        public void readyForNextFrame() {
             if (this.hasBeenUsed) {
-                this.framebuffer.clear();
                 this.hasBeenUsed = false;
             }
         }
@@ -85,6 +86,12 @@ public final class CustomRenderTypes extends RenderType {
             RenderTarget buffer = this.framebuffer.getFramebuffer();
             if (buffer != null) {
                 buffer.bindWrite(false);
+                if (!this.hasBeenUsed) {
+                    this.framebuffer.clear();
+                    if (this.copyDepth) {
+                        this.framebuffer.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+                    }
+                }
                 this.hasBeenUsed = true;
             }
         }

@@ -12,6 +12,7 @@ public abstract class WParticleRenderTypeBuilder {
     protected final Map<ResourceLocation, RenderType> targets = new HashMap<>();
     protected ResourceLocation postShader = null;
     protected Blending blending = Blending.DEFAULT;
+    protected boolean copyDepth = false;
 
     protected WParticleRenderTypeBuilder(ResourceLocation name) {
         this.name = name;
@@ -29,6 +30,11 @@ public abstract class WParticleRenderTypeBuilder {
 
     public WParticleRenderTypeBuilder blending(Blending blending) {
         this.blending = blending;
+        return this;
+    }
+
+    public WParticleRenderTypeBuilder copyDepth() {
+        this.copyDepth = true;
         return this;
     }
 

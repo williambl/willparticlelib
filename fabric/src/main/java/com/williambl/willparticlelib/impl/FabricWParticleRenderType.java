@@ -37,8 +37,8 @@ public class FabricWParticleRenderType implements WParticleRenderType {
             Map<ResourceLocation, RenderType> renderTargets,
             ResourceLocation postShader,
             Blending blending,
-            FabricWParticleSetupFunction setupFunction
-    ) {
+            FabricWParticleSetupFunction setupFunction,
+            boolean copyDepth) {
         this.name = name;
         this.postShader = ShaderEffectManager.getInstance().manage(postShader);
         this.blending = blending;
@@ -46,7 +46,7 @@ public class FabricWParticleRenderType implements WParticleRenderType {
         this.finalBuffer = this.postShader.getTarget(id("final").toString());
         this.renderTargets = new LinkedHashMap<>(renderTargets.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
-                e -> new CustomRenderTypes.CustomRenderTarget(e.getKey(), this.postShader, e.getValue())
+                e -> new CustomRenderTypes.CustomRenderTarget(e.getKey(), this.postShader, e.getValue(), copyDepth)
         )));
     }
 
@@ -80,7 +80,7 @@ public class FabricWParticleRenderType implements WParticleRenderType {
         RenderSystem.defaultBlendFunc();
 
         for (var target : this.renderTargets.values()) {
-            target.clear();
+            target.readyForNextFrame();
         }
     }
 }

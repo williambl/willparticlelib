@@ -8,6 +8,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.RenderType;
@@ -26,14 +27,16 @@ public class WillParticleLibFabric implements ModInitializer {
     public void onInitialize() {
         var additiveParticleRenderType = WillParticleLib.registerRenderType(id("additive_translucent"), ((FabricWParticleRenderTypeBuilder)Services.RENDERING.wParticleRenderTypebuilder(id("additive")))
                 .renderTarget(id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED)
-                .postShader(id("shaders/post/particle.json"))
+                .postShader(id("shaders/post/soft_particle.json"))
                 .blending(Blending.ADDITIVE)
+                .copyDepth()
                 .build());
 
         var softParticleRenderType = WillParticleLib.registerRenderType(id("soft"), ((FabricWParticleRenderTypeBuilder)Services.RENDERING.wParticleRenderTypebuilder(id("soft")))
                 .renderTarget(id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED)
                 .postShader(id("shaders/post/soft_particle.json"))
                 .setupFunction((shader, cam, tickDelta, time) -> shader.setUniformValue("NearPlane", (float) cam.getNearPlane().getPointOnPlane(0, 0).length()))
+                .copyDepth()
                 .build());
 
         var additiveParticleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("additive_particle"), new SimpleParticleType(true) {});

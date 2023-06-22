@@ -20,7 +20,8 @@ public class FabricWParticleRenderTypeBuilder extends WParticleRenderTypeBuilder
                 this.targets,
                 this.postShader,
                 this.blending,
-                this.setupFunction
+                this.setupFunction,
+                this.copyDepth
         );
     }
 
@@ -42,5 +43,10 @@ public class FabricWParticleRenderTypeBuilder extends WParticleRenderTypeBuilder
     @Override
     public FabricWParticleRenderTypeBuilder blending(Blending blending) {
         return (FabricWParticleRenderTypeBuilder) super.blending(blending);
+    }
+
+    @Override
+    public FabricWParticleRenderTypeBuilder copyDepth() {
+        return (FabricWParticleRenderTypeBuilder) super.copyDepth();
     }
 }
