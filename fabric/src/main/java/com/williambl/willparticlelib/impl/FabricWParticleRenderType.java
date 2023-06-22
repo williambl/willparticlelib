@@ -66,7 +66,9 @@ public class FabricWParticleRenderType implements WParticleRenderType {
 
     @Override
     public void renderPost(Camera camera, float tickDelta, long nanoTime) {
-        this.setupFunction.setup(this.postShader, camera, tickDelta, nanoTime);
+        if (this.setupFunction != null) {
+            this.setupFunction.setup(this.postShader, camera, tickDelta, nanoTime);
+        }
         this.postShader.render(tickDelta);
         Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
         RenderSystem.enableBlend();

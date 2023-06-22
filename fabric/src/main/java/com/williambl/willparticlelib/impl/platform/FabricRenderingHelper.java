@@ -2,7 +2,9 @@ package com.williambl.willparticlelib.impl.platform;
 
 import com.williambl.willparticlelib.api.Blending;
 import com.williambl.willparticlelib.api.WParticleRenderType;
+import com.williambl.willparticlelib.api.WParticleRenderTypeBuilder;
 import com.williambl.willparticlelib.impl.FabricWParticleRenderType;
+import com.williambl.willparticlelib.impl.FabricWParticleRenderTypeBuilder;
 import com.williambl.willparticlelib.impl.FabricWParticleSetupFunction;
 import com.williambl.willparticlelib.impl.PostLevelRenderCallback;
 import com.williambl.willparticlelib.impl.platform.services.IRenderingHelper;
@@ -13,9 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Map;
 
 public class FabricRenderingHelper implements IRenderingHelper {
+
     @Override
-    public WParticleRenderType createParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader, Blending blending, Object setupFunction) {
-        return new FabricWParticleRenderType(name, renderTargets, postShader, blending, (FabricWParticleSetupFunction) setupFunction);
+    public WParticleRenderTypeBuilder wParticleRenderTypebuilder(ResourceLocation name) {
+        return new FabricWParticleRenderTypeBuilder(name);
     }
 
     @Override

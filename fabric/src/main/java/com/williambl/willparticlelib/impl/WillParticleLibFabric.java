@@ -24,31 +24,21 @@ public class WillParticleLibFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        var additiveParticleRenderType = WillParticleLib.registerRenderType(id("additive"), Services.RENDERING.createParticleRenderType(
-                id("additive"),
-                Map.of(
-                        id("albedo"), CustomRenderTypes.PARTICLE
-                ),
-                id("shaders/post/test_post.json"),
-                Blending.ADDITIVE,
-                ((FabricWParticleSetupFunction) (shader, cam, tickDelta, time) -> {})
-        ));
+        var additiveParticleRenderType = WillParticleLib.registerRenderType(id("additive_translucent"), ((FabricWParticleRenderTypeBuilder)Services.RENDERING.wParticleRenderTypebuilder(id("additive")))
+                .renderTarget(id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED)
+                .postShader(id("shaders/post/particle.json"))
+                .blending(Blending.ADDITIVE)
+                .build());
 
-        var translucentParticleRenderType = WillParticleLib.registerRenderType(id("translucent"), Services.RENDERING.createParticleRenderType(
-                id("translucent"),
-                Map.of(
-                        id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED
-                ),
-                id("shaders/post/soft_particle.json"),
-                Blending.DEFAULT,
-                ((FabricWParticleSetupFunction) (shader, cam, tickDelta, time) -> {
-                    shader.setUniformValue("NearPlane", (float) cam.getNearPlane().getPointOnPlane(0, 0).length());
-                })
-        ));
+        var softParticleRenderType = WillParticleLib.registerRenderType(id("soft"), ((FabricWParticleRenderTypeBuilder)Services.RENDERING.wParticleRenderTypebuilder(id("soft")))
+                .renderTarget(id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE_DEPTH_TESTED)
+                .postShader(id("shaders/post/soft_particle.json"))
+                .setupFunction((shader, cam, tickDelta, time) -> shader.setUniformValue("NearPlane", (float) cam.getNearPlane().getPointOnPlane(0, 0).length()))
+                .build());
 
         var additiveParticleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("additive_particle"), new SimpleParticleType(true) {});
         ParticleFactoryRegistry.getInstance().register(additiveParticleType, new TestWParticle.Provider(additiveParticleRenderType));
-        var translucentParticle = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("translucent_particle"), new SimpleParticleType(true) {});
-        ParticleFactoryRegistry.getInstance().register(translucentParticle, new TestWParticle.Provider(translucentParticleRenderType));
+        var softParticle = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("soft_particle"), new SimpleParticleType(true) {});
+        ParticleFactoryRegistry.getInstance().register(softParticle, new TestWParticle.Provider(softParticleRenderType));
     }
 }
