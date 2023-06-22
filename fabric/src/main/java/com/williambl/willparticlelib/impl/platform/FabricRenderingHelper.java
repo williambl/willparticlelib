@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class FabricRenderingHelper implements IRenderingHelper {
     @Override
-    public WParticleRenderType createParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader) {
-        return new FabricWParticleRenderType(name, renderTargets, postShader, Blending.ADDITIVE);
+    public WParticleRenderType createParticleRenderType(ResourceLocation name, Map<ResourceLocation, RenderType> renderTargets, ResourceLocation postShader, Blending blending) {
+        return new FabricWParticleRenderType(name, renderTargets, postShader, blending);
     }
 
     @Override

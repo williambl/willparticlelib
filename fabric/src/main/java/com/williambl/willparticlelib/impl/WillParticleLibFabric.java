@@ -1,6 +1,7 @@
 package com.williambl.willparticlelib.impl;
 
 import com.mojang.blaze3d.shaders.Shader;
+import com.williambl.willparticlelib.api.Blending;
 import com.williambl.willparticlelib.api.WillParticleLib;
 import com.williambl.willparticlelib.impl.platform.Services;
 import net.fabricmc.api.ModInitializer;
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,15 +24,27 @@ public class WillParticleLibFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        var particleRenderType = WillParticleLib.registerRenderType(id("test"), Services.RENDERING.createParticleRenderType(
-                id("test"),
+        var additiveParticleRenderType = WillParticleLib.registerRenderType(id("additive"), Services.RENDERING.createParticleRenderType(
+                id("additive"),
                 Map.of(
-                        id("albedo"), CustomRenderTypes.PARTICLE,
-                        id("position"), CustomRenderTypes.POSITION
+                        id("albedo"), CustomRenderTypes.PARTICLE
                 ),
-                id("shaders/post/test_post.json")
+                id("shaders/post/test_post.json"),
+                Blending.ADDITIVE
         ));
-        var particleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("test_particle"), new SimpleParticleType(true) {});
-        ParticleFactoryRegistry.getInstance().register(particleType, new TestWParticle.Provider(particleRenderType));
+
+        var translucentParticleRenderType = WillParticleLib.registerRenderType(id("translucent"), Services.RENDERING.createParticleRenderType(
+                id("translucent"),
+                Map.of(
+                        id("albedo"), CustomRenderTypes.TRANSLUCENT_PARTICLE
+                ),
+                id("shaders/post/test_post.json"),
+                Blending.DEFAULT
+        ));
+
+        var additiveParticleType = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("additive_particle"), new SimpleParticleType(true) {});
+        ParticleFactoryRegistry.getInstance().register(additiveParticleType, new TestWParticle.Provider(additiveParticleRenderType));
+        var translucentParticle = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("translucent_particle"), new SimpleParticleType(true) {});
+        ParticleFactoryRegistry.getInstance().register(translucentParticle, new TestWParticle.Provider(translucentParticleRenderType));
     }
 }

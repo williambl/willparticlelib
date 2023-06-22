@@ -14,6 +14,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
@@ -40,7 +41,7 @@ public class TestWParticle extends WParticle {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource.BufferSource buffers, LightTexture light, Camera camera, float tickDelta) {
-        for (var target : List.of(this.wRenderType().albedoRenderType(CustomRenderTypes.WHITE))) {
+        for (var target : List.of(this.wRenderType().albedoRenderType(CustomRenderTypes.FLASH))) {
             var buffer = buffers.getBuffer(target);
             this.renderRotatedParticle(buffer, camera, tickDelta, quaternion -> {
                 quaternion.mul(Axis.YP.rotation(this.yRot));

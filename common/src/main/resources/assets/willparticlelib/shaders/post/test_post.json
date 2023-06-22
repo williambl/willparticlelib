@@ -21,12 +21,6 @@
           "name": "DiffuseDepthSampler",
           "id": "willparticlelib:albedo:depth"
         }
-      ],
-      "uniforms": [
-        {
-          "name": "ColorModulate",
-          "values": [ 0.3, 0.3, 0.3, 1.0 ]
-        }
       ]
     }
   ]
